@@ -5,6 +5,8 @@ A Python-based ArcGIS Script Tool that models **flood depth** and **erosion risk
 user-defined study area. It runs inside ArcGIS Pro with the Spatial Analyst extension.
 Built with AI-assisted programming. GitHub: https://github.com/carterjen3ct/flood-erosion-model
 
+**Course context:** GEOG 469 Lab 2 — AI-Assisted Programming for GIS. Due 2026-09-24.
+
 ---
 
 ## File structure
@@ -13,12 +15,14 @@ Built with AI-assisted programming. GitHub: https://github.com/carterjen3ct/floo
 flood_model/
 ├── flood_model.py      # Main script tool — all analysis logic
 ├── lookups.py          # CN table, C-factor table, K default, hydro group maps
-├── setup_toolbox.py    # Run once to generate FloodModel.tbx via arcpy
+├── FloodModel.pyt      # Python Toolbox — ArcGIS auto-detects this, no setup needed
+├── setup_toolbox.py    # Legacy: attempted to generate FloodModel.tbx (deprecated — use .pyt)
 ├── CLAUDE.md           # This file
-└── .gitignore          # Excludes FloodModel.tbx, __pycache__, etc.
+└── .gitignore          # Excludes __pycache__, etc.
 ```
 
-`FloodModel.tbx` is not committed — it is generated locally by running `setup_toolbox.py`.
+`FloodModel.pyt` is the active toolbox. `setup_toolbox.py` is kept for reference but
+`arcpy.management.CreateToolbox` does not exist in all ArcGIS Pro versions — use the .pyt.
 
 ---
 
@@ -32,12 +36,10 @@ flood_model/
 
 ## How to set up the toolbox
 
-```powershell
-cd C:\Users\carte\Documents\flood_model
-python setup_toolbox.py
-```
-
-Then in ArcGIS Pro: Catalog pane → Folders → connect to this folder → open FloodModel.tbx.
+No setup script needed. Just:
+1. Open ArcGIS Pro
+2. Catalog pane → Folders → right-click → **Add Folder Connection** → `C:\Users\carte\Documents\flood_model`
+3. Expand the folder → expand `FloodModel.pyt` → double-click **Flood & Erosion Model**
 
 ---
 
