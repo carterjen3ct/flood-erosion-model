@@ -30,7 +30,7 @@ class FloodErosionModel:
         self.label = "Flood & Erosion Model"
         self.description = (
             "Models flood depth and erosion risk for a defined study area. "
-            "Inputs: DEM, soil layer (with hydrologic group), and land use layer. "
+            "Inputs: DEM and soil layer (with hydrologic group). "
             "Outputs: flood depth raster (SCS-CN routed) and RUSLE erosion risk raster."
         )
         self.canRunInBackground = False
@@ -101,40 +101,8 @@ class FloodErosionModel:
         p5.parameterDependencies = [p3.name]
         p5.filter.list = ["Double", "Single", "Float"]
 
-        # 6: Land use polygon layer (NLCD or custom)
+        # 6: Rainfall depth (numeric)
         p6 = arcpy.Parameter(
-            displayName="Land Use Layer",
-            name="land_use_layer",
-            datatype="GPFeatureLayer",
-            parameterType="Required",
-            direction="Input"
-        )
-        p6.filter.list = ["Polygon"]
-
-        # 7: Land use class field — auto-populates from land use layer
-        p7 = arcpy.Parameter(
-            displayName="Land Use Class Field",
-            name="land_use_field",
-            datatype="Field",
-            parameterType="Required",
-            direction="Input"
-        )
-        p7.parameterDependencies = [p6.name]
-
-        # 8: Classification system dropdown
-        p8 = arcpy.Parameter(
-            displayName="Land Use Classification",
-            name="classification",
-            datatype="GPString",
-            parameterType="Required",
-            direction="Input"
-        )
-        p8.filter.type = "ValueList"
-        p8.filter.list = ["NLCD", "Custom"]
-        p8.value = "NLCD"
-
-        # 9: Rainfall depth (numeric)
-        p9 = arcpy.Parameter(
             displayName="Rainfall Depth",
             name="rainfall_depth",
             datatype="GPDouble",
@@ -142,20 +110,20 @@ class FloodErosionModel:
             direction="Input"
         )
 
-        # 10: Rainfall units dropdown
-        p10 = arcpy.Parameter(
+        # 7: Rainfall units dropdown
+        p7 = arcpy.Parameter(
             displayName="Rainfall Units",
             name="rainfall_units",
             datatype="GPString",
             parameterType="Required",
             direction="Input"
         )
-        p10.filter.type = "ValueList"
-        p10.filter.list = ["Inches", "Millimeters"]
-        p10.value = "Inches"
+        p7.filter.type = "ValueList"
+        p7.filter.list = ["Inches", "Millimeters"]
+        p7.value = "Inches"
 
-        # 11: Output workspace (folder or file GDB)
-        p11 = arcpy.Parameter(
+        # 8: Output workspace (folder or file GDB)
+        p8 = arcpy.Parameter(
             displayName="Output Workspace",
             name="output_workspace",
             datatype="DEWorkspace",
@@ -163,8 +131,8 @@ class FloodErosionModel:
             direction="Input"
         )
 
-        # 12: Output flood depth raster path
-        p12 = arcpy.Parameter(
+        # 9: Output flood depth raster path
+        p9 = arcpy.Parameter(
             displayName="Output Flood Depth Raster",
             name="out_flood_raster",
             datatype="DERasterDataset",
@@ -172,8 +140,8 @@ class FloodErosionModel:
             direction="Output"
         )
 
-        # 13: Output erosion risk raster path
-        p13 = arcpy.Parameter(
+        # 10: Output erosion risk raster path
+        p10 = arcpy.Parameter(
             displayName="Output Erosion Risk Raster",
             name="out_erosion_raster",
             datatype="DERasterDataset",
@@ -181,7 +149,7 @@ class FloodErosionModel:
             direction="Output"
         )
 
-        return [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13]
+        return [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10]
 
     def isLicensed(self):
         """Tool requires Spatial Analyst — assumed available per project conventions."""
@@ -196,10 +164,15 @@ class FloodErosionModel:
         pass
 
     def execute(self, parameters, messages):
-        """Run the flood and erosion model. arcpy.GetParameterAsText() reads from
-        the parameters passed here, so flood_model.main() works unchanged."""
+        """Run the flood and erosion model with the values entered in the dialog."""
+        import importlib
+        import lookups
         import flood_model
-        flood_model.main()
+        # Reload so edits to lookups.py / flood_model.py take effect without
+        # restarting ArcGIS Pro (Pro caches imported modules between runs)
+        importlib.reload(lookups)
+        importlib.reload(flood_model)
+        flood_model.main(parameters)
 
     def postExecute(self, parameters):
         """Nothing to clean up after execution."""

@@ -86,40 +86,8 @@ def build_parameters():
     p5.parameterDependencies = [p3.name]
     p5.filter.list = ["Double", "Single", "Float"]
 
-    # 6: Land Use Layer
+    # 6: Rainfall Depth
     p6 = arcpy.Parameter(
-        displayName="Land Use Layer",
-        name="land_use_layer",
-        datatype="GPFeatureLayer",
-        parameterType="Required",
-        direction="Input"
-    )
-    p6.filter.list = ["Polygon"]
-
-    # 7: Land Use Class Field (derived from land use layer — auto-populates)
-    p7 = arcpy.Parameter(
-        displayName="Land Use Class Field",
-        name="land_use_field",
-        datatype="Field",
-        parameterType="Required",
-        direction="Input"
-    )
-    p7.parameterDependencies = [p6.name]
-
-    # 8: Classification System
-    p8 = arcpy.Parameter(
-        displayName="Land Use Classification",
-        name="classification",
-        datatype="GPString",
-        parameterType="Required",
-        direction="Input"
-    )
-    p8.filter.type = "ValueList"
-    p8.filter.list = ["NLCD", "Custom"]
-    p8.value = "NLCD"
-
-    # 9: Rainfall Depth
-    p9 = arcpy.Parameter(
         displayName="Rainfall Depth",
         name="rainfall_depth",
         datatype="GPDouble",
@@ -127,20 +95,20 @@ def build_parameters():
         direction="Input"
     )
 
-    # 10: Rainfall Units
-    p10 = arcpy.Parameter(
+    # 7: Rainfall Units
+    p7 = arcpy.Parameter(
         displayName="Rainfall Units",
         name="rainfall_units",
         datatype="GPString",
         parameterType="Required",
         direction="Input"
     )
-    p10.filter.type = "ValueList"
-    p10.filter.list = ["Inches", "Millimeters"]
-    p10.value = "Inches"
+    p7.filter.type = "ValueList"
+    p7.filter.list = ["Inches", "Millimeters"]
+    p7.value = "Inches"
 
-    # 11: Output Workspace
-    p11 = arcpy.Parameter(
+    # 8: Output Workspace
+    p8 = arcpy.Parameter(
         displayName="Output Workspace",
         name="output_workspace",
         datatype="DEWorkspace",
@@ -148,8 +116,8 @@ def build_parameters():
         direction="Input"
     )
 
-    # 12: Output Flood Depth Raster
-    p12 = arcpy.Parameter(
+    # 9: Output Flood Depth Raster
+    p9 = arcpy.Parameter(
         displayName="Output Flood Depth Raster",
         name="out_flood_raster",
         datatype="DERasterDataset",
@@ -157,8 +125,8 @@ def build_parameters():
         direction="Output"
     )
 
-    # 13: Output Erosion Risk Raster
-    p13 = arcpy.Parameter(
+    # 10: Output Erosion Risk Raster
+    p10 = arcpy.Parameter(
         displayName="Output Erosion Risk Raster",
         name="out_erosion_raster",
         datatype="DERasterDataset",
@@ -166,7 +134,7 @@ def build_parameters():
         direction="Output"
     )
 
-    return [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13]
+    return [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10]
 
 
 # ---------------------------------------------------------------------------
@@ -193,7 +161,7 @@ def create_toolbox():
         parameters=params,
         description=(
             "Models flood depth and erosion risk for a defined study area. "
-            "Inputs: DEM, soil layer (with hydrologic group), and land use layer. "
+            "Inputs: DEM and soil layer (with hydrologic group). "
             "Outputs: flood depth raster (SCS-CN routed) and RUSLE erosion risk raster."
         ),
         display_name="Flood & Erosion Model"
