@@ -24,14 +24,16 @@ class Toolbox:
 
 
 class FloodErosionModel:
-    """Flood depth and erosion risk modeling tool."""
+    """Flood depth and soil loss modeling tool."""
 
     def __init__(self):
         self.label = "Flood & Erosion Model"
         self.description = (
-            "Models flood depth and erosion risk for a defined study area. "
+            "Models where storm runoff ponds and how deep, and how much soil "
+            "the storm erodes, for a defined study area. "
             "Inputs: DEM and soil layer (with hydrologic group). "
-            "Outputs: flood depth raster (SCS-CN routed) and RUSLE erosion risk raster."
+            "Outputs: flood depth raster (SCS-CN runoff ponded in terrain "
+            "depressions, NoData where dry) and RUSLE soil loss raster (t/ha)."
         )
         self.canRunInBackground = False
 
@@ -59,7 +61,7 @@ class FloodErosionModel:
 
         # 2: DEM units dropdown
         p2 = arcpy.Parameter(
-            displayName="DEM Units",
+            displayName="DEM Elevation Units",
             name="dem_units",
             datatype="GPString",
             parameterType="Required",
@@ -142,7 +144,7 @@ class FloodErosionModel:
 
         # 10: Output erosion risk raster path
         p10 = arcpy.Parameter(
-            displayName="Output Erosion Risk Raster",
+            displayName="Output Soil Loss Raster (t/ha)",
             name="out_erosion_raster",
             datatype="DERasterDataset",
             parameterType="Required",
